@@ -10,6 +10,7 @@ export default class Game {
     this.renderer = autoDetectRenderer(window.innerWidth, window.innerHeight, { transparent: true }, false);
     this._element.appendChild(this.renderer.view);
     this._lastFrameTime = 0;
+    this._platforms = [];
     this.initPlayer();
     this.bindInput();
     requestAnimationFrame(this.update.bind(this));
@@ -21,6 +22,8 @@ export default class Game {
   initObstacles() {
     const plat1 = new Platform(this, this.renderer.width * 0.3, this.renderer.height * 0.8);
     const plat2 = new Platform(this, this.renderer.width * 0.6, this.renderer.height * 0.6);
+    this._platforms.push(plat1);
+    this._platforms.push(plat2);
   }
   update(currentTime) {
     const msSinceLastFrame = currentTime - this._lastFrameTime;

@@ -7,21 +7,20 @@ export const edgeCollision = (newXValue, newYValue, container, width, height) =>
     newXValue > width - widthRadie;
 }
 
-export const unitCollision = (unit, otherUnits, excluded) => {
-  const ab = unit._container.getBounds();
+export const unitCollision = (x, y, container, otherUnits) => {
+  const rect1 = { x, y, height: container.height, width: container.width };
   for (let i = 0; i < otherUnits.length; i++) {
     const otherUnit = otherUnits[i];
-    if (unit === otherUnit ||
-      (excluded && otherUnit === excluded) ||
-      (otherUnit._creator && otherUnit._creator === unit)) {
-      continue;
-    }
-    const bb = otherUnit._container.getBounds();
-    if (ab.x + ab.width > bb.x &&
-      ab.x < bb.x + bb.width &&
-      ab.y + ab.height > bb.y &&
-      ab.y < bb.y + bb.height) {
-      return otherUnit;
+    const rect2 = otherUnit._container.getBounds();
+    if (rect1.x < rect2.x + rect2.width &&
+      rect1.x + rect1.width > rect2.x &&
+      rect1.y < rect2.y + rect2.height &&
+      rect1.height + rect1.y > rect2.y) {
+      const currentBounds = container.getBounds();
+      return {
+        dx: Math.abs(currentBounds.x - rect2.x) - rect1.height
+        , dy: Math.abs(currentBounds.y - rect2.y) - rect1.width
+      }
     }
   }
   return false;
@@ -30,15 +29,15 @@ export const unitCollision = (unit, otherUnits, excluded) => {
 export const hitCircle = (px, py, r, c) => {
   const cb = c._container.getBounds();
   const r2 = (cb.width / 2);
-  const a =  r + r2;
+  const a = r + r2;
   const x = px - c._container.x;
   const y = py - c._container.y;
   return a > Math.sqrt((x * x) + (y * y));
-} 
+}
 
 export const circleCollision = (px, py, r, circles) => {
-  for(let i =0; i < circles.length; i++) {
-    if(hitCircle(px, py, r, circles[i])) {
+  for (let i = 0; i < circles.length; i++) {
+    if (hitCircle(px, py, r, circles[i])) {
       return true;
     }
   }
