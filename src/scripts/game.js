@@ -16,7 +16,7 @@ export default class Game {
     this.initObstacles();
   }
   initPlayer() {
-    this._player = new Duck(this, 0, this.renderer.height - 30);
+    this._player = new Duck(this, 100, this.renderer.height - 230);
   }
   initObstacles() {
     const plat1 = new Platform(this, this.renderer.width * 0.3, this.renderer.height * 0.8);
