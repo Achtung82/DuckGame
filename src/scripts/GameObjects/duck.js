@@ -1,9 +1,10 @@
 import {Container, Graphics, Texture} from "pixi.js";
 import { edgeCollision, unitCollision, circleCollision } from "../Functions/collision";
 import GameObject from "./gameobject.js"
+import { ifError } from "assert";
 
 const MOVE_SPEED = 4;
-const GRAVITY = 2.4;
+const GRAVITY = 2.2;
 
 export class Duck extends GameObject {
   constructor(game, x, y) {
@@ -25,6 +26,7 @@ export class Duck extends GameObject {
     this._left = false;
     this._right = false;
     this.downSpeed = 0;
+    this.doubleJumpSaved = 0;
   }
   left(value) {
     this._left = value;
@@ -33,7 +35,13 @@ export class Duck extends GameObject {
     this._right = value;
   }
   jump() {
-    console.log("hopp!");
+    if(this._container.position.y === this._gameHeight - this._radius) {
+      this.doubleJumpSaved = 1;
+      this.downSpeed = -30;
+    } else if(this.doubleJumpSaved > 0){
+      this.doubleJumpSaved--;
+      this.downSpeed = -30;
+    }
   }
   _update(msSinceLastFrame, currentTime) {
 
@@ -44,7 +52,9 @@ export class Duck extends GameObject {
     if(newYValue > this._gameHeight - this._radius) {
       this.downSpeed = 0;
       newYValue = this._gameHeight - this._radius;
-    } else if(newYValue < this._gameHeight - this._radius) {
+    } 
+    
+    if(newYValue < this._gameHeight - this._radius || this.downSpeed < 0) {
       this.downSpeed += GRAVITY;
       newYValue += this.downSpeed;
     }
